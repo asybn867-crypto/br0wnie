@@ -5,12 +5,15 @@ Website toko brownies **Br0wNie**: menu satuan, hampers, keranjang belanja, pesa
 ## Fitur
 - Menu brownies dengan filter kategori (Klasik, Topping, Spesial) dan label Terlaris/Habis.
 - Box & hampers (isi 4, 9, 16).
-- Keranjang: atur jumlah, pilih diantar/ambil sendiri, tanggal, catatan. Tombol "Kirim pesanan ke WhatsApp" menyusun pesan pesanan otomatis.
-- Panel admin: tambah/edit/hapus produk (termasuk upload foto), tandai stok habis, atur nomor WhatsApp, jam buka, teks berjalan, ekspor/impor data, ganti password.
+- Keranjang dengan dua pilihan:
+  - **Diantar**: pesanan otomatis tersusun dan dikirim ke WhatsApp toko.
+  - **Datang ke toko**: pembeli mendapat alamat outlet + kode pesanan (mis. `BRW-2511-KZAC`), lalu memilih **QRIS** (QR dengan nominal otomatis) atau **Tunai** (tunjukkan kode/QR ke kasir). Tiket bisa disimpan sebagai gambar.
+- Panel admin: tambah/edit/hapus produk (termasuk upload foto), tandai stok habis, nomor WhatsApp, link Instagram/Facebook, outlet, upload QRIS, jam buka, teks berjalan, ekspor/impor data, ganti password.
 
 ## Pengaturan
 Edit `config.js`:
 - `WA_NUMBER`: nomor WhatsApp toko, format `628xxxxxxxxxx`.
+- `INSTAGRAM`, `FACEBOOK`: link akun sosial media (kosong = tampil "segera").
 - `ADMIN_HASH`: hash password admin. Hitung: `printf 'shii-salt:PASSWORD_BARU' | sha256sum`.
 
 ## Catatan teknis

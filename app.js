@@ -1,7 +1,7 @@
 (() => {
   document.documentElement.classList.add('js');
   const CFG = window.SHII_CONFIG || {};
-  const KEY = 'br0wnie-data-v1', CKEY = 'br0wnie-cart-v1';
+  const KEY = 'br0wnie-data-v2', CKEY = 'br0wnie-cart-v1';
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const uid = () => Math.random().toString(36).slice(2, 10);
@@ -11,17 +11,17 @@
 
   const defaults = () => ({
     products: [
-      {id:'classic', nama:'Classic Fudgy', harga:12000, kategori:'Klasik', desk:'Dark chocolate pekat, tengah lembap, top crackly mengilap.', img:'assets/p-classic.jpg', habis:false, laris:true},
-      {id:'cheese', nama:'Cheese Swirl', harga:15000, kategori:'Topping', desk:'Marmer cream cheese gurih di atas brownies cokelat.', img:'assets/p-cheese.jpg', habis:false},
-      {id:'almond', nama:'Almond Crunch', harga:14000, kategori:'Topping', desk:'Taburan almond slice panggang yang renyah.', img:'assets/p-almond.jpg', habis:false},
-      {id:'hazel', nama:'Hazelnut Lava', harga:16000, kategori:'Spesial', desk:'Swirl selai cokelat hazelnut dan hazelnut sangrai.', img:'assets/p-hazel.jpg', habis:false, laris:true},
-      {id:'cookies', nama:'Cookies & Cream', harga:15000, kategori:'Topping', desk:'Potongan biskuit cokelat isi krim di setiap gigitan.', img:'assets/p-cookies.jpg', habis:false},
-      {id:'matcha', nama:'Matcha Marble', harga:16000, kategori:'Spesial', desk:'Swirl white chocolate matcha di atas dark chocolate.', img:'assets/p-matcha.jpg', habis:false},
-      {id:'box4', nama:'Box Isi 4', harga:55000, kategori:'Hampers', desk:'Pilih 4 rasa, cocok untuk ngemil berdua.', img:'', habis:false},
-      {id:'box9', nama:'Box Isi 9', harga:120000, kategori:'Hampers', desk:'Favorit untuk arisan dan kantor.', img:'', habis:false, laris:true},
-      {id:'box16', nama:'Hampers Isi 16', harga:205000, kategori:'Hampers', desk:'Box kraft + pita + kartu ucapan.', img:'', habis:false},
+      {id:'original', nama:'Original Fudgy', harga:15000, kategori:'Klasik', desk:'Brownies cokelat klasik, fudgy dan moist. Isi 4 pcs.', img:'assets/p-classic.jpg', habis:false, laris:true},
+      {id:'cheese', nama:'Cheese Brownies', harga:18000, kategori:'Topping', desk:'Perpaduan cokelat dan cream cheese yang creamy. Isi 4 pcs.', img:'assets/p-cheese.jpg', habis:false},
+      {id:'almond', nama:'Almond Brownies', harga:18000, kategori:'Topping', desk:'Brownies cokelat dengan topping kacang almond. Isi 4 pcs.', img:'assets/p-almond.jpg', habis:false},
+      {id:'marshmallow', nama:'Marshmallow', harga:18000, kategori:'Topping', desk:'Brownies cokelat dengan topping marshmallow panggang. Isi 4 pcs.', img:'assets/p-marshmallow.jpg', habis:false},
+      {id:'matcha', nama:'Matcha Brownies', harga:20000, kategori:'Spesial', desk:'Brownies rasa matcha dengan white chocolate. Isi 4 pcs.', img:'assets/p-matcha.jpg', habis:false},
+      {id:'redvelvet', nama:'Red Velvet', harga:20000, kategori:'Spesial', desk:'Rasa red velvet dengan topping cream cheese. Isi 4 pcs.', img:'assets/p-redvelvet.jpg', habis:false},
+      {id:'biscoff', nama:'Biscoff Brownies', harga:23000, kategori:'Spesial', desk:'Brownies dengan selai dan remahan biskuit Biscoff. Isi 4 pcs.', img:'assets/p-biscoff.jpg', habis:false, laris:true},
+      {id:'family9', nama:'Family Box isi 9', harga:40000, kategori:'Hampers', desk:'9 pcs, campur rasa sesukamu. Tulis kombinasinya di catatan.', img:'', habis:false, laris:true},
     ],
-    toko: { wa: CFG.WA_NUMBER || '', jam: 'Setiap hari, 08.00–20.00', marquee: 'Fudgy, Crackly top, Dipanggang pagi ini, Dark chocolate asli, Tanpa pengawet, Hampers custom' }
+
+    toko: { wa: CFG.WA_NUMBER || '', jam: 'Setiap hari, 08.00–20.00', qrisPayload: '', qrisImg: '', fb: CFG.FACEBOOK || '', ig: CFG.INSTAGRAM || '', outlets: [{ nama: 'Br0wNie Liya One Melangka', alamat: 'Liya One Melangka, Kec. Wangi-Wangi Selatan, Wanci, Kab. Wakatobi, Sulawesi Tenggara', maps: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('Liya One Melangka, Wangi-Wangi Selatan, Wakatobi'), jam: '08.00–20.00' }], marquee: 'Fudgy, Crackly top, Dipanggang pagi ini, Dark chocolate asli, Tanpa pengawet, Hampers custom' }
   });
 
   let db;
@@ -61,6 +61,10 @@
     const one = words.map(w => `<span>${esc(w)}</span>`).join('');
     $('#marquee').innerHTML = one + one;
     $('#foot-hours').textContent = db.toko.jam;
+    const soc = [['Instagram', db.toko.ig], ['Facebook', db.toko.fb]];
+    $('#foot-social').innerHTML = soc.map(([n, u]) => u ? `<a class="soc" href="${esc(u)}" target="_blank" rel="noopener">${n}</a>` : `<span class="soc off" title="Segera hadir">${n} <small>segera</small></span>`).join('');
+    const o = (db.toko.outlets || [])[0];
+    $('#foot-addr').textContent = o ? o.alamat : '';
   }
 
   // ---------- Cart ----------
@@ -91,8 +95,27 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('on')) openDrawer(false); });
 
   const form = $('#form-order');
+  const OKEY = 'br0wnie-last-order';
+  const nowLocal = (addMin = 60) => { const d = new Date(Date.now() + addMin * 6e4); return `${ymd(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`; };
   form.tanggal.value = ymd(new Date()); form.tanggal.min = ymd(new Date());
-  const syncMetode = () => { const d = form.metode.value === 'Diantar'; $('#lbl-alamat').hidden = !d; form.alamat.required = d; };
+  form.ambil.value = nowLocal(60); form.ambil.min = nowLocal(0);
+  const outlets = () => db.toko.outlets || [];
+  function renderOutletSelect() {
+    const sel = $('#sel-outlet'), cur = sel.value;
+    sel.innerHTML = outlets().map((o, i) => `<option value="${i}">${esc(o.nama)}</option>`).join('') || '<option value="">Belum ada outlet</option>';
+    if (cur && outlets()[cur]) sel.value = cur;
+    const o = outlets()[sel.value];
+    $('#outlet-info').innerHTML = o ? `${esc(o.alamat)}${o.jam ? `<br>Buka ${esc(o.jam)}` : ''}${o.maps ? `<br><a href="${esc(o.maps)}" target="_blank" rel="noopener">Buka di Google Maps →</a>` : ''}` : 'Toko belum menambahkan alamat outlet.';
+  }
+  const syncMetode = () => {
+    const m = form.metode.value;
+    $$('.grp').forEach(g => g.hidden = g.dataset.for !== m);
+    form.alamat.required = m === 'antar'; form.tanggal.required = m === 'antar';
+    form.ambil.required = m === 'toko';
+    $('#btn-order').textContent = m === 'antar' ? 'Kirim pesanan ke WhatsApp' : (form.bayar.value === 'qris' ? 'Buat pesanan & bayar QRIS' : 'Buat kode pesanan');
+    $('#order-fine').textContent = m === 'antar' ? 'Ongkir dihitung saat konfirmasi di WhatsApp.' : 'Tanpa ongkir. Tunjukkan kode pesanan saat ambil di outlet.';
+    renderOutletSelect();
+  };
   form.addEventListener('change', syncMetode); syncMetode();
 
   function openWA(text) {
@@ -100,22 +123,126 @@
     const url = (n ? `https://wa.me/${n}` : 'https://wa.me/') + '?text=' + encodeURIComponent(text);
     window.open(url, '_blank', 'noopener');
   }
+  const fmtDT = s => new Date(s).toLocaleString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+  function makeCode() {
+    const d = new Date(), A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let r = ''; const rnd = crypto.getRandomValues(new Uint8Array(4)); rnd.forEach(x => r += A[x % A.length]);
+    return `BRW-${pad(d.getDate())}${pad(d.getMonth() + 1)}-${r}`;
+  }
+
+  // ---- QRIS (EMVCo) helpers: static -> dynamic with amount ----
+  function crc16(str) {
+    let crc = 0xFFFF;
+    for (let i = 0; i < str.length; i++) { crc ^= str.charCodeAt(i) << 8; for (let j = 0; j < 8; j++) crc = crc & 0x8000 ? (crc << 1) ^ 0x1021 : crc << 1; crc &= 0xFFFF; }
+    return crc.toString(16).toUpperCase().padStart(4, '0');
+  }
+  function parseTLV(s) { const out = []; let i = 0; while (i + 4 <= s.length) { const t = s.substr(i, 2), l = parseInt(s.substr(i + 2, 2), 10); if (isNaN(l)) throw 0; out.push([t, s.substr(i + 4, l)]); i += 4 + l; } if (i !== s.length) throw 0; return out; }
+  function isQris(s) { try { const t = parseTLV(s); const crc = t.find(x => x[0] === '63'); return t[0][0] === '00' && crc && crc16(s.slice(0, -4)) === crc[1].toUpperCase(); } catch { return false; } }
+  function dynamicQris(payload, amount) {
+    let t = parseTLV(payload).filter(([k]) => k !== '63' && k !== '54');
+    t = t.map(([k, v]) => k === '01' ? [k, '12'] : [k, v]);
+    const amt = String(Math.round(amount));
+    const idx = t.findIndex(([k]) => Number(k) > 54);
+    t.splice(idx < 0 ? t.length : idx, 0, ['54', amt]);
+    const body = t.map(([k, v]) => k + String(v.length).padStart(2, '0') + v).join('') + '6304';
+    return body + crc16(body);
+  }
+  function qrSvg(text) {
+    if (!window.qrcode) return '<p class="muted">QR tidak bisa dimuat. Tunjukkan kode di atas ke kasir.</p>';
+    const q = qrcode(0, 'M'); q.addData(text); q.make();
+    return q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+  }
+
+  let lastOrder = null;
+  try { lastOrder = JSON.parse(localStorage.getItem(OKEY)); } catch {}
+  const showTicketBtn = () => { $('#btn-ticket').hidden = !lastOrder; };
+  showTicketBtn();
+
+  function showTicket(o) {
+    const outlet = o.outlet;
+    $('#drawer-title').textContent = o.bayar === 'qris' ? 'Bayar dengan QRIS' : 'Kode pesanan';
+    $('#t-code').textContent = o.kode;
+    let qrText, hint, kicker;
+    if (o.bayar === 'qris' && db.toko.qrisPayload) {
+      qrText = dynamicQris(db.toko.qrisPayload, o.total);
+      kicker = '<span class="status-pill wait">Menunggu pembayaran</span><br>Kode pesanan';
+      hint = `Scan pakai m-banking atau e-wallet apa pun. Nominal ${rp(o.total)} sudah otomatis terisi. Tunjukkan bukti bayar + kode ini saat ambil.`;
+      $('#t-qr').innerHTML = qrSvg(qrText); $('#t-qr').classList.remove('small');
+    } else if (o.bayar === 'qris' && db.toko.qrisImg) {
+      kicker = '<span class="status-pill wait">Menunggu pembayaran</span><br>Kode pesanan';
+      hint = `Scan QRIS ini lalu masukkan nominal <b>${rp(o.total)}</b>. Tunjukkan bukti bayar + kode ini saat ambil.`;
+      $('#t-qr').innerHTML = `<img src="${db.toko.qrisImg}" alt="QRIS toko">`; $('#t-qr').classList.remove('small');
+    } else {
+      qrText = `${o.kode} | ${o.nama} | ${o.items.map(i => i.q + 'x ' + i.nama).join(', ')} | Total ${rp(o.total)} | ${o.bayar === 'qris' ? 'QRIS' : 'Tunai'}`;
+      kicker = '<span class="status-pill cash">Bayar di kasir</span><br>Kode pesanan';
+      hint = o.bayar === 'qris' ? 'QRIS toko belum tersedia. Tunjukkan kode ini ke kasir dan bayar di outlet.' : 'Tunjukkan kode atau QR ini ke kasir, lalu bayar tunai saat mengambil pesanan.';
+      $('#t-qr').innerHTML = qrSvg(qrText); $('#t-qr').classList.add('small');
+    }
+    $('#t-kicker').innerHTML = kicker; $('#t-hint').innerHTML = hint;
+    $('#t-total').textContent = rp(o.total);
+    $('#t-rows').innerHTML = o.items.map(i => `<div><span>${i.q}× ${esc(i.nama)}</span><span>${rp(i.q * i.harga)}</span></div>`).join('') + `<div><span>Atas nama</span><span>${esc(o.nama)}</span></div>`;
+    $('#t-outlet').innerHTML = outlet ? `<strong>${esc(outlet.nama)}</strong>${esc(outlet.alamat)}${outlet.jam ? `<br>Buka ${esc(outlet.jam)}` : ''}<br>Ambil: ${fmtDT(o.ambil)}${outlet.maps ? `<br><a href="${esc(outlet.maps)}" target="_blank" rel="noopener">Petunjuk arah →</a>` : ''}` : `Ambil: ${fmtDT(o.ambil)}`;
+    ['view-cart', 'foot-cart'].forEach(id => $('#' + id).hidden = true);
+    ['view-done', 'foot-done'].forEach(id => $('#' + id).hidden = false);
+    openDrawer(true);
+  }
+  function backToCart() {
+    $('#drawer-title').textContent = 'Keranjang';
+    ['view-cart', 'foot-cart'].forEach(id => $('#' + id).hidden = false);
+    ['view-done', 'foot-done'].forEach(id => $('#' + id).hidden = true);
+  }
+  $('#btn-done').addEventListener('click', () => { openDrawer(false); setTimeout(backToCart, 400); });
+  $('#btn-ticket').addEventListener('click', () => lastOrder && showTicket(lastOrder));
+  $('#btn-cart').addEventListener('click', backToCart, true);
+  $('#btn-confirm-wa').addEventListener('click', () => {
+    const o = lastOrder; if (!o) return;
+    openWA([`Halo ${CFG.STORE_NAME || 'Br0wNie'}, saya pesan untuk diambil di toko.`, '', `Kode: ${o.kode}`,
+      ...o.items.map(i => `• ${i.q}x ${i.nama} — ${rp(i.q * i.harga)}`), `Total: ${rp(o.total)}`,
+      `Pembayaran: ${o.bayar === 'qris' ? 'QRIS (bukti bayar saya lampirkan)' : 'Tunai di kasir'}`,
+      `Outlet: ${o.outlet ? o.outlet.nama : '-'}`, `Ambil: ${fmtDT(o.ambil)}`, `Nama: ${o.nama}`, ...(o.catatan ? [`Catatan: ${o.catatan}`] : [])].join('\n'));
+  });
+  $('#btn-save-ticket').addEventListener('click', () => {
+    const o = lastOrder; if (!o) return;
+    const svg = $('#t-qr svg'), img = $('#t-qr img');
+    const c = document.createElement('canvas'); c.width = 720; c.height = 1040; const g = c.getContext('2d');
+    g.fillStyle = '#fffaf2'; g.fillRect(0, 0, 720, 1040);
+    g.fillStyle = '#2a1a12'; g.textAlign = 'center';
+    g.font = '800 44px "Cabinet Grotesk", sans-serif'; g.fillText('Br0wNie', 360, 80);
+    g.font = '500 24px Satoshi, sans-serif'; g.fillStyle = '#5b4335'; g.fillText(o.bayar === 'qris' ? 'Bayar dengan QRIS' : 'Bayar tunai di kasir', 360, 125);
+    g.fillStyle = '#2a1a12'; g.font = '800 56px "Cabinet Grotesk", sans-serif'; g.fillText(o.kode, 360, 205);
+    const finish = () => {
+      g.font = '700 34px "Cabinet Grotesk", sans-serif'; g.fillText('Total ' + rp(o.total), 360, 790);
+      g.font = '400 22px Satoshi, sans-serif'; g.fillStyle = '#5b4335';
+      g.fillText(o.outlet ? o.outlet.nama : '', 360, 840);
+      g.fillText('Ambil ' + fmtDT(o.ambil), 360, 875);
+      g.fillText('Atas nama ' + o.nama, 360, 910);
+      const a = document.createElement('a'); a.download = `${o.kode}.png`;
+      try { a.href = c.toDataURL('image/png'); a.click(); } catch { toast('Tidak bisa menyimpan gambar, screenshot saja ya'); }
+    };
+    const src = svg ? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg.outerHTML) : img ? img.src : null;
+    if (!src) return finish();
+    const im = new Image(); im.onload = () => { g.drawImage(im, 160, 250, 400, 400); finish(); }; im.onerror = finish; im.src = src;
+  });
+
   form.addEventListener('submit', e => {
     e.preventDefault();
     const items = cartItems(); if (!items.length) return toast('Keranjang masih kosong');
     const f = Object.fromEntries(new FormData(form));
     const total = items.reduce((s, x) => s + x.q * x.p.harga, 0);
-    const tgl = new Date(f.tanggal + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-    const lines = [
-      `Halo ${CFG.STORE_NAME || 'Br0wNie'}, saya mau pesan:`, '',
-      ...items.map(({ p, q }) => `• ${q}x ${p.nama} — ${rp(p.harga * q)}`), '',
-      `Total: ${rp(total)} (belum ongkir)`, '',
-      `Nama: ${f.nama}`, `Pengambilan: ${f.metode}`,
-      ...(f.metode === 'Diantar' ? [`Alamat: ${f.alamat}`] : []),
-      `Tanggal: ${tgl}`, ...(f.catatan ? [`Catatan: ${f.catatan}`] : [])
-    ];
-    openWA(lines.join('\n'));
-    toast('Membuka WhatsApp…');
+    if (f.metode === 'antar') {
+      const tgl = new Date(f.tanggal + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      openWA([`Halo ${CFG.STORE_NAME || 'Br0wNie'}, saya mau pesan (diantar):`, '',
+        ...items.map(({ p, q }) => `• ${q}x ${p.nama} — ${rp(p.harga * q)}`), '',
+        `Total: ${rp(total)} (belum ongkir)`, '', `Nama: ${f.nama}`, `Alamat: ${f.alamat}`, `Tanggal kirim: ${tgl}`,
+        ...(f.catatan ? [`Catatan: ${f.catatan}`] : [])].join('\n'));
+      toast('Membuka WhatsApp…'); return;
+    }
+    if (!outlets().length) return toast('Toko belum menambahkan alamat outlet');
+    lastOrder = { kode: makeCode(), nama: f.nama, bayar: f.bayar, ambil: f.ambil, catatan: f.catatan, total,
+      outlet: outlets()[f.outlet] || outlets()[0], items: items.map(({ p, q }) => ({ nama: p.nama, harga: p.harga, q })), dibuat: Date.now() };
+    try { localStorage.setItem(OKEY, JSON.stringify(lastOrder)); } catch {}
+    cart = {}; saveCart(); renderCart(); showTicketBtn();
+    showTicket(lastOrder);
   });
   document.addEventListener('click', e => {
     const t = e.target.closest('[data-add],[data-inc],[data-dec],[data-filter],[data-quick-wa],[data-close-drawer]'); if (!t) return;
@@ -180,7 +307,8 @@
         <button class="mini" data-pstock="${p.id}">${p.habis ? 'Tersedia' : 'Habis'}</button>
         <button class="mini" data-pedit="${p.id}">Edit</button>
         <button class="mini del" data-pdel="${p.id}">Hapus</button></li>`).join('');
-    const t = $('#form-toko'); t.wa.value = db.toko.wa; t.jam.value = db.toko.jam; t.marquee.value = db.toko.marquee;
+    const t = $('#form-toko'); t.fb.value = db.toko.fb || ''; t.ig.value = db.toko.ig || ''; t.wa.value = db.toko.wa; t.jam.value = db.toko.jam; t.marquee.value = db.toko.marquee;
+    renderOutletAdmin(); renderQrisAdmin();
     $('#reset-msg').textContent = ''; $('#btn-reset').classList.remove('armed'); $('#pass-out').textContent = '';
   }
   const guard = () => { if (!isAdmin()) { da.close(); applyAdmin(); toast('Sesi admin berakhir, silakan login lagi'); return false; } return true; };
@@ -220,7 +348,7 @@
   });
   $('#form-toko').addEventListener('submit', e => {
     e.preventDefault(); if (!guard()) return; const f = e.target;
-    db.toko = { wa: f.wa.value.replace(/\D/g, ''), jam: f.jam.value.trim(), marquee: f.marquee.value.trim() || defaults().toko.marquee };
+    Object.assign(db.toko, { fb: f.fb.value.trim(), ig: f.ig.value.trim(), wa: f.wa.value.replace(/\D/g, ''), jam: f.jam.value.trim(), marquee: f.marquee.value.trim() || defaults().toko.marquee });
     save(); renderToko(); toast('Pengaturan toko disimpan');
   });
   $('#btn-reset').addEventListener('click', e => {
@@ -246,8 +374,49 @@
     localStorage.setItem(HKEY, h); sessionStorage.setItem(SKEY, JSON.stringify({ h, exp: Date.now() + 8 * 3600e3 })); f.reset();
     $('#pass-out').innerHTML = 'Password diganti di perangkat ini. Agar berlaku di semua perangkat, tempel hash ini ke <b>ADMIN_HASH</b> di config.js:<code class="hash">' + h + '</code>';
   });
+  function renderOutletAdmin() {
+    $('#outlet-list').innerHTML = outlets().map((o, i) => `<li><span class="ph">${i + 1}</span><span class="grow"><b>${esc(o.nama)}</b><small>${esc(o.alamat)}${o.jam ? ' · ' + esc(o.jam) : ''}</small></span><button class="mini del" data-odel="${i}">Hapus</button></li>`).join('') || '<li class="muted">Belum ada outlet.</li>';
+  }
+  $('#outlet-list').addEventListener('click', e => {
+    const t = e.target.closest('[data-odel]'); if (!t || !guard()) return;
+    if (!t.classList.contains('armed')) { t.classList.add('armed'); t.textContent = 'Yakin?'; return; }
+    db.toko.outlets.splice(Number(t.dataset.odel), 1); save(); renderOutletAdmin(); renderOutletSelect(); toast('Outlet dihapus');
+  });
+  $('#form-outlet').addEventListener('submit', e => {
+    e.preventDefault(); if (!guard()) return; const f = e.target;
+    (db.toko.outlets ||= []).push({ nama: f.nama.value.trim(), alamat: f.alamat.value.trim(), maps: f.maps.value.trim(), jam: f.jam.value.trim() });
+    save(); f.reset(); renderOutletAdmin(); renderOutletSelect(); toast('Outlet ditambahkan');
+  });
+  function renderQrisAdmin() {
+    const t = db.toko;
+    $('#qris-preview').innerHTML = t.qrisImg ? `<img src="${t.qrisImg}" alt="QRIS">` : 'Belum ada QRIS';
+    $('#qris-msg').innerHTML = t.qrisPayload ? '✓ QRIS terbaca. Nominal otomatis aktif.' : t.qrisImg ? 'QR tidak terbaca otomatis. Pembeli akan diminta mengetik nominal sendiri.' : '';
+  }
+  function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
+  $('#qris-file').addEventListener('change', async e => {
+    if (!guard()) return; const file = e.target.files[0]; if (!file) return;
+    $('#qris-msg').textContent = 'Membaca QRIS…';
+    try {
+      const url = await new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
+      const im = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = url; });
+      const max = 1000, k = Math.min(1, max / Math.max(im.width, im.height));
+      const c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(im, 0, 0, c.width, c.height);
+      let payload = '';
+      try {
+        if (!window.jsQR) await loadScript('https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js');
+        const d = g.getImageData(0, 0, c.width, c.height); const r = jsQR(d.data, c.width, c.height);
+        if (r && isQris(r.data)) payload = r.data;
+      } catch {}
+      db.toko.qrisImg = c.toDataURL('image/jpeg', .85); db.toko.qrisPayload = payload; save(); renderQrisAdmin();
+      toast(payload ? 'QRIS tersimpan' : 'Gambar tersimpan, QR tidak terbaca otomatis');
+    } catch { $('#qris-msg').textContent = 'Gambar tidak bisa dibaca.'; }
+    e.target.value = '';
+  });
+  $('#qris-clear').addEventListener('click', () => { if (!guard()) return; db.toko.qrisImg = ''; db.toko.qrisPayload = ''; save(); renderQrisAdmin(); toast('QRIS dihapus'); });
+
   $('#btn-logout').addEventListener('click', () => { sessionStorage.removeItem(SKEY); da.close(); applyAdmin(); toast('Keluar dari mode admin'); });
 
-  function renderAll() { renderFilters(); renderProducts(); renderToko(); renderCart(); }
+  function renderAll() { renderFilters(); renderProducts(); renderToko(); renderCart(); renderOutletSelect(); }
   renderAll(); applyAdmin();
 })();

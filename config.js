@@ -5,7 +5,10 @@
 //            Hitung: printf 'shii-salt:PASSWORD_BARU' | sha256sum
 window.SHII_CONFIG = {
   STORE_NAME: "Br0wNie",
-  WA_NUMBER: "",
+  WA_NUMBER: "6285123107523",
+  // Isi link kalau akun sudah dibuat, mis. "https://instagram.com/br0wnie"
+  INSTAGRAM: "",
+  FACEBOOK: "",
   ADMIN_USER: "admin",
   ADMIN_HASH: "da3a4914b634ab18f4e01caafc3d8b9425e7b393f42b6c0c088e94f674f5a743"
 };

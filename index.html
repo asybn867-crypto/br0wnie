@@ -18,6 +18,7 @@
       <a href="#menu">Menu</a><a href="#cerita">Cerita</a><a href="#hampers">Hampers</a><a href="#faq">FAQ</a>
     </nav>
     <div class="nav-actions">
+      <button class="btn ghost sm" id="btn-ticket" hidden>Pesanan saya</button>
       <button class="btn ghost sm" id="btn-admin">Admin</button>
       <button class="btn cart-btn" id="btn-cart" aria-label="Buka keranjang">Keranjang <b id="cart-count">0</b></button>
     </div>
@@ -47,7 +48,7 @@
     <div class="wrap">
       <div class="sec-head">
         <div>
-          <p class="kicker">Menu satuan</p>
+          <p class="kicker">Menu · per box isi 4</p>
           <h2 id="h-menu">Pilih <em>potonganmu</em></h2>
         </div>
         <div class="filters" role="tablist" aria-label="Kategori" id="filters"></div>
@@ -64,9 +65,9 @@
         <h2 id="h-cerita">Kecil-kecilan, tapi <em>serius</em> soal cokelat.</h2>
         <p>Br0wNie lahir dari dapur rumahan dan satu obsesi: brownies yang padat dan lembap di tengah, renyah tipis di atas. Angka nol di nama kami adalah pengingat, nol pengawet, nol margarin, nol kompromi.</p>
         <ol class="steps">
-          <li><b>01</b><span><strong>Cokelat asli</strong>Couverture dark chocolate dilelehkan bersama mentega.</span></li>
+          <li><b>01</b><span><strong>Cokelat asli</strong>Dark chocolate dilelehkan bersama mentega, bukan pasta cokelat.</span></li>
           <li><b>02</b><span><strong>Batch kecil</strong>Dipanggang tiap pagi, hanya sebanyak pesanan hari itu.</span></li>
-          <li><b>03</b><span><strong>Dikemas rapi</strong>Box kraft food-grade, aman dikirim ke dalam kota.</span></li>
+          <li><b>03</b><span><strong>Dikemas rapi</strong>Box kraft yang rapi, aman diantar sekitar Wangi-Wangi.</span></li>
         </ol>
       </div>
     </div>
@@ -90,8 +91,8 @@
       <h2 id="h-cara">Tiga langkah, <em>beres</em>.</h2>
       <div class="how">
         <article class="reveal"><span>1</span><h3>Pilih menu</h3><p>Tambahkan brownies satuan atau box hampers ke keranjang.</p></article>
-        <article class="reveal"><span>2</span><h3>Isi data</h3><p>Nama, alamat, dan pilih diantar atau ambil sendiri.</p></article>
-        <article class="reveal"><span>3</span><h3>Kirim ke WhatsApp</h3><p>Pesanan otomatis tersusun rapi, tinggal kirim dan konfirmasi.</p></article>
+        <article class="reveal"><span>2</span><h3>Isi data</h3><p>Pilih diantar, atau datang ke outlet dan bayar pakai QRIS / tunai.</p></article>
+        <article class="reveal"><span>3</span><h3>Terima pesananmu</h3><p>Diantar: konfirmasi via WhatsApp. Ambil di toko: tunjukkan kode pesanan ke kasir.</p></article>
       </div>
     </div>
   </section>
@@ -104,7 +105,7 @@
       </div>
       <div class="faq">
         <details><summary>Tahan berapa lama?</summary><p>3 hari di suhu ruang dalam wadah tertutup, sampai 7 hari di kulkas. Hangatkan 10 detik di microwave biar lumer lagi.</p></details>
-        <details><summary>Pesan H-berapa?</summary><p>Menu satuan bisa dipesan di hari yang sama selama stok ada. Hampers sebaiknya H-1.</p></details>
+        <details><summary>Pesan H-berapa?</summary><p>Box isi 4 bisa dipesan di hari yang sama selama stok ada. Family Box sebaiknya H-1.</p></details>
         <details><summary>Bisa kirim ke mana?</summary><p>Pengiriman dalam kota lewat kurir instan, ongkir mengikuti jarak. Bisa juga ambil sendiri.</p></details>
         <details><summary>Pembayarannya bagaimana?</summary><p>Transfer bank atau e-wallet. Detail pembayaran dikirim setelah pesanan dikonfirmasi via WhatsApp.</p></details>
       </div>
@@ -121,7 +122,8 @@
   <div class="wrap foot-in">
     <div><p class="logo light">Br<span>0</span>wNie</p><p class="muted-l">Brownies fudgy, dipanggang tiap pagi.</p></div>
     <div><p class="foot-h">Jam buka</p><p class="muted-l" id="foot-hours"></p></div>
-    <div><p class="foot-h">Pesan</p><p class="muted-l"><button class="link-l" data-quick-wa>WhatsApp</button></p></div>
+    <div><p class="foot-h">Outlet</p><p class="muted-l" id="foot-addr"></p></div>
+    <div><p class="foot-h">Ikuti &amp; pesan</p><p class="muted-l"><button class="link-l" data-quick-wa>WhatsApp 0851-2310-7523</button></p><div class="socials" id="foot-social"></div></div>
   </div>
   <div class="wrap foot-bottom muted-l">© <span id="year"></span> Br0wNie</div>
 </footer>
@@ -129,24 +131,57 @@
 <!-- Cart drawer -->
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-label="Keranjang" aria-hidden="true">
-  <div class="drawer-head"><h2>Keranjang</h2><button class="x" data-close-drawer aria-label="Tutup">×</button></div>
-  <div class="drawer-body">
+  <div class="drawer-head"><h2 id="drawer-title">Keranjang</h2><button class="x" data-close-drawer aria-label="Tutup">×</button></div>
+
+  <div class="drawer-body" id="view-cart">
     <ul class="cart-list" id="cart-list"></ul>
     <form id="form-order" class="order">
       <label>Nama<input name="nama" required maxlength="60" autocomplete="name"></label>
-      <fieldset class="seg"><legend>Pengambilan</legend>
-        <label><input type="radio" name="metode" value="Diantar" checked><span>Diantar</span></label>
-        <label><input type="radio" name="metode" value="Ambil sendiri"><span>Ambil sendiri</span></label>
+      <fieldset class="seg"><legend>Mau ambil bagaimana?</legend>
+        <label><input type="radio" name="metode" value="antar" checked><span>Diantar</span></label>
+        <label><input type="radio" name="metode" value="toko"><span>Datang ke toko</span></label>
       </fieldset>
-      <label id="lbl-alamat">Alamat<textarea name="alamat" rows="2" maxlength="200"></textarea></label>
-      <label>Tanggal<input name="tanggal" type="date" required></label>
+
+      <div class="grp" data-for="antar">
+        <label>Alamat pengiriman<textarea name="alamat" rows="2" maxlength="200"></textarea></label>
+        <label>Tanggal kirim<input name="tanggal" type="date"></label>
+      </div>
+
+      <div class="grp" data-for="toko" hidden>
+        <label>Outlet<select name="outlet" id="sel-outlet"></select></label>
+        <p class="outlet-info" id="outlet-info"></p>
+        <label>Waktu ambil<input name="ambil" type="datetime-local"></label>
+        <fieldset class="seg pay"><legend>Pembayaran</legend>
+          <label><input type="radio" name="bayar" value="qris" checked><span><b>QRIS</b><small>Bayar sekarang, scan QR</small></span></label>
+          <label><input type="radio" name="bayar" value="tunai"><span><b>Tunai</b><small>Bayar di kasir pakai kode</small></span></label>
+        </fieldset>
+      </div>
+
       <label>Catatan<textarea name="catatan" rows="2" maxlength="200" placeholder="mis. box 9 isi 3 klasik, 3 keju, 3 matcha"></textarea></label>
     </form>
   </div>
-  <div class="drawer-foot">
+
+  <div class="drawer-body" id="view-done" hidden>
+    <div class="ticket">
+      <p class="kicker" id="t-kicker">Kode pesanan</p>
+      <p class="t-code" id="t-code"></p>
+      <div class="t-qr" id="t-qr"></div>
+      <p class="t-hint" id="t-hint"></p>
+      <div class="t-total"><span>Total bayar</span><b id="t-total"></b></div>
+      <hr class="t-cut">
+      <div class="t-rows" id="t-rows"></div>
+      <div class="t-outlet" id="t-outlet"></div>
+    </div>
+  </div>
+
+  <div class="drawer-foot" id="foot-cart">
     <div class="total"><span>Total</span><b id="cart-total">Rp0</b></div>
     <button class="btn primary block" form="form-order" type="submit" id="btn-order">Kirim pesanan ke WhatsApp</button>
-    <p class="fine">Ongkir dihitung saat konfirmasi.</p>
+    <p class="fine" id="order-fine">Ongkir dihitung saat konfirmasi di WhatsApp.</p>
+  </div>
+  <div class="drawer-foot" id="foot-done" hidden>
+    <button class="btn primary block" id="btn-confirm-wa">Kabari toko via WhatsApp</button>
+    <div class="row2"><button class="btn ghost" id="btn-save-ticket">Simpan gambar</button><button class="btn ghost" id="btn-done">Selesai</button></div>
   </div>
 </aside>
 
@@ -190,9 +225,33 @@
       <form id="form-toko" class="prod-form">
         <label class="full">Nomor WhatsApp (format 62…)<input name="wa" inputmode="numeric" pattern="62[0-9]{8,13}" placeholder="6281234567890"></label>
         <label class="full">Jam buka<input name="jam" maxlength="60"></label>
+        <label>Link Instagram<input name="ig" type="url" placeholder="https://instagram.com/…"></label>
+        <label class="span2">Link Facebook<input name="fb" type="url" placeholder="https://facebook.com/…"></label>
         <label class="full">Teks berjalan (pisahkan dengan koma)<input name="marquee" maxlength="200"></label>
         <div class="full"><button class="btn primary sm" type="submit">Simpan</button></div>
       </form>
+
+      <div class="sub col">
+        <h3 class="mini-h">Outlet</h3>
+        <ul class="admin-list" id="outlet-list"></ul>
+        <form id="form-outlet" class="prod-form">
+          <label>Nama outlet<input name="nama" required maxlength="40" placeholder="Br0wNie Panakkukang"></label>
+          <label class="span2">Alamat<input name="alamat" required maxlength="140"></label>
+          <label class="span2">Link Google Maps<input name="maps" type="url" placeholder="https://maps.app.goo.gl/…"></label>
+          <label>Jam buka<input name="jam" maxlength="40" placeholder="08.00–20.00"></label>
+          <div class="full"><button class="btn primary sm" type="submit">Tambah outlet</button></div>
+        </form>
+      </div>
+
+      <div class="sub col">
+        <h3 class="mini-h">QRIS</h3>
+        <p class="muted">Upload foto QRIS toko dari bank/e-wallet Anda. Kalau QR-nya terbaca, nominal belanja akan otomatis masuk ke QR (QRIS dinamis), jadi pembeli tidak perlu mengetik nominal.</p>
+        <div class="qris-admin"><div id="qris-preview" class="qris-prev"></div>
+          <div class="col-btns"><label class="btn ghost sm" for="qris-file">Upload QRIS</label><input type="file" id="qris-file" accept="image/*" hidden>
+          <button class="btn danger sm" id="qris-clear">Hapus QRIS</button></div></div>
+        <p class="muted" id="qris-msg"></p>
+      </div>
+
       <div class="sub">
         <button class="btn ghost sm" id="btn-export">Ekspor data</button>
         <label class="btn ghost sm" for="file-import">Impor data</label><input type="file" id="file-import" accept="application/json" hidden>
@@ -214,6 +273,7 @@
 </dialog>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>
