@@ -265,7 +265,7 @@
   $('#year').textContent = new Date().getFullYear();
 
   // ---------- Admin ----------
-  const HKEY = 'br0wnie-admin-hash', SKEY = 'br0wnie-admin-session';
+  const HKEY = 'br0wnie-admin-hash-v2', SKEY = 'br0wnie-admin-session';
   async function sha(str) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
     return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
