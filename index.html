@@ -3,177 +3,213 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Shii — Ruang Kelas</title>
-<meta name="description" content="Shii: jadwal pelajaran, daftar nilai, dan streak belajar dalam satu tempat.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%233f4a3c'/><text x='16' y='22' font-size='17' text-anchor='middle' fill='%23faf7f0' font-family='sans-serif' font-weight='700'>S</text></svg>">
+<title>Br0wNie — Brownies fudgy, dipanggang tiap pagi</title>
+<meta name="description" content="Br0wNie: brownies fudgy dengan top crackly, dipanggang tiap pagi. Pesan satuan atau hampers lewat WhatsApp.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%232a1a12'/><text x='16' y='23' font-size='19' text-anchor='middle' fill='%23f6efe4' font-family='sans-serif' font-weight='800'>0</text></svg>">
 <link rel="preconnect" href="https://api.fontshare.com">
-<link href="https://api.fontshare.com/v2/css?f[]=chillax@500,600&f[]=general-sans@400,500,600&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@700,800&f[]=boska@701&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="topbar">
-  <div class="wrap topbar-in">
-    <a class="brand" href="#" data-go="beranda">Shii<span>.</span></a>
-    <nav class="tabs" role="tablist" aria-label="Menu utama">
-      <button role="tab" data-go="beranda" aria-selected="true">Beranda</button>
-      <button role="tab" data-go="jadwal">Jadwal</button>
-      <button role="tab" data-go="nilai">Nilai</button>
-      <button role="tab" data-go="streak">Streak</button>
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a href="#top" class="logo" aria-label="Br0wNie, ke atas">Br<span>0</span>wNie</a>
+    <nav class="nav-links" aria-label="Navigasi">
+      <a href="#menu">Menu</a><a href="#cerita">Cerita</a><a href="#hampers">Hampers</a><a href="#faq">FAQ</a>
     </nav>
-    <button class="btn admin-btn" id="btn-admin" aria-haspopup="dialog">Login admin</button>
+    <div class="nav-actions">
+      <button class="btn ghost sm" id="btn-admin">Admin</button>
+      <button class="btn cart-btn" id="btn-cart" aria-label="Buka keranjang">Keranjang <b id="cart-count">0</b></button>
+    </div>
   </div>
 </header>
 
-<main class="wrap">
-  <!-- BERANDA -->
-  <section id="beranda" class="view active" aria-labelledby="h-beranda">
-    <p class="eyebrow" id="today-label"></p>
-    <h1 id="h-beranda" class="title">Halo, siap belajar hari ini?</h1>
-    <div class="grid-3">
-      <article class="card stat">
-        <span class="stat-label">Streak saat ini</span>
-        <span class="stat-num"><b id="s-streak">0</b> hari</span>
-        <button class="btn primary" id="btn-checkin-home">Catat belajar hari ini</button>
-      </article>
-      <article class="card stat">
-        <span class="stat-label">Rata-rata nilai</span>
-        <span class="stat-num"><b id="s-avg">–</b></span>
-        <span class="muted" id="s-avg-sub">Belum ada nilai</span>
-      </article>
-      <article class="card stat">
-        <span class="stat-label">Pelajaran hari ini</span>
-        <span class="stat-num"><b id="s-today-count">0</b> mapel</span>
-        <span class="muted" id="s-next">–</span>
-      </article>
+<main id="top">
+  <section class="hero">
+    <img class="hero-img" src="assets/hero.jpg" alt="Tumpukan brownies fudgy dengan top crackly, satu potong sudah digigit" width="1600" height="900" fetchpriority="high">
+    <div class="wrap hero-in">
+      <p class="kicker reveal" id="status-open">Dipanggang pagi ini</p>
+      <h1 class="reveal">Brownies <em>fudgy</em>, nyoklat sampai gigitan terakhir.</h1>
+      <p class="lede reveal">Dark chocolate asli, mentega, dan top crackly yang mengilap. Dipanggang dalam jumlah kecil tiap pagi, langsung dikirim ke rumahmu.</p>
+      <div class="hero-cta reveal">
+        <a class="btn primary" href="#menu">Lihat menu</a>
+        <button class="btn outline" data-quick-wa>Tanya via WhatsApp</button>
+      </div>
+      <ul class="chips reveal">
+        <li>Tanpa pengawet</li><li>Fresh setiap hari</li><li>Bisa custom hampers</li>
+      </ul>
     </div>
-    <article class="card">
-      <div class="card-head"><h2>Jadwal hari ini</h2><button class="link" data-go="jadwal">Lihat semua →</button></div>
-      <ul class="list" id="today-list"></ul>
-    </article>
   </section>
 
-  <!-- JADWAL -->
-  <section id="jadwal" class="view" aria-labelledby="h-jadwal">
-    <h1 id="h-jadwal" class="title">Jadwal Pelajaran</h1>
-    <p class="notice" id="jadwal-lock">Jadwal hanya bisa diubah oleh admin. <button class="link" data-open-login>Login admin</button></p>
-    <form class="card form admin-only" id="form-jadwal">
-      <label>Hari
-        <select name="hari" required>
-          <option>Senin</option><option>Selasa</option><option>Rabu</option><option>Kamis</option><option>Jumat</option><option>Sabtu</option>
-        </select>
-      </label>
-      <label>Mata pelajaran<input name="mapel" required placeholder="mis. Matematika" maxlength="40"></label>
-      <label>Mulai<input name="mulai" type="time" required value="07:30"></label>
-      <label>Selesai<input name="selesai" type="time" required value="09:00"></label>
-      <label>Guru / ruang<input name="ket" placeholder="opsional" maxlength="40"></label>
-      <button class="btn primary" type="submit">Tambah</button>
-    </form>
-    <div class="days" id="days"></div>
-  </section>
+  <div class="marquee" aria-hidden="true"><div class="marquee-track" id="marquee"></div></div>
 
-  <!-- NILAI -->
-  <section id="nilai" class="view" aria-labelledby="h-nilai">
-    <h1 id="h-nilai" class="title">Daftar Nilai</h1>
-    <form class="card form" id="form-nilai">
-      <label>Mata pelajaran<input name="mapel" required list="mapel-list" placeholder="mis. Fisika" maxlength="40"></label>
-      <datalist id="mapel-list"></datalist>
-      <label>Jenis
-        <select name="jenis"><option>Tugas</option><option>Kuis</option><option>Ulangan Harian</option><option>UTS</option><option>UAS</option><option>Praktik</option></select>
-      </label>
-      <label>Nilai (0–100)<input name="nilai" type="number" min="0" max="100" step="0.1" required placeholder="85"></label>
-      <label>Tanggal<input name="tanggal" type="date" required></label>
-      <button class="btn primary" type="submit">Simpan nilai</button>
-    </form>
-    <div class="grid-2">
-      <article class="card">
-        <div class="card-head"><h2>Rata-rata per mapel</h2></div>
-        <ul class="bars" id="bars"></ul>
-      </article>
-      <article class="card">
-        <div class="card-head">
-          <h2>Semua nilai</h2>
-          <select id="filter-mapel" aria-label="Filter mapel"><option value="">Semua mapel</option></select>
+  <section class="section" id="menu" aria-labelledby="h-menu">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <p class="kicker">Menu satuan</p>
+          <h2 id="h-menu">Pilih <em>potonganmu</em></h2>
         </div>
-        <div class="table-wrap"><table>
-          <thead><tr><th>Tanggal</th><th>Mapel</th><th>Jenis</th><th class="r">Nilai</th><th></th></tr></thead>
-          <tbody id="nilai-body"></tbody>
-        </table></div>
-      </article>
+        <div class="filters" role="tablist" aria-label="Kategori" id="filters"></div>
+      </div>
+      <div class="grid" id="product-grid"></div>
     </div>
   </section>
 
-  <!-- STREAK -->
-  <section id="streak" class="view" aria-labelledby="h-streak">
-    <h1 id="h-streak" class="title">Streak Belajar</h1>
-    <div class="grid-3">
-      <article class="card stat flame-card">
-        <span class="stat-label">Streak saat ini</span>
-        <span class="stat-num big"><b id="st-current">0</b> hari</span>
-        <span class="muted" id="st-msg"></span>
-      </article>
-      <article class="card stat">
-        <span class="stat-label">Streak terpanjang</span>
-        <span class="stat-num"><b id="st-best">0</b> hari</span>
-      </article>
-      <article class="card stat">
-        <span class="stat-label">Total hari belajar</span>
-        <span class="stat-num"><b id="st-total">0</b> hari</span>
-      </article>
+  <section class="section dark" id="cerita" aria-labelledby="h-cerita">
+    <div class="wrap split">
+      <figure class="split-media reveal"><img src="assets/process.jpg" alt="Loyang brownies yang baru matang sedang dipotong menjadi kotak" loading="lazy" width="1200" height="900"></figure>
+      <div class="split-copy">
+        <p class="kicker">Cerita kami</p>
+        <h2 id="h-cerita">Kecil-kecilan, tapi <em>serius</em> soal cokelat.</h2>
+        <p>Br0wNie lahir dari dapur rumahan dan satu obsesi: brownies yang padat dan lembap di tengah, renyah tipis di atas. Angka nol di nama kami adalah pengingat, nol pengawet, nol margarin, nol kompromi.</p>
+        <ol class="steps">
+          <li><b>01</b><span><strong>Cokelat asli</strong>Couverture dark chocolate dilelehkan bersama mentega.</span></li>
+          <li><b>02</b><span><strong>Batch kecil</strong>Dipanggang tiap pagi, hanya sebanyak pesanan hari itu.</span></li>
+          <li><b>03</b><span><strong>Dikemas rapi</strong>Box kraft food-grade, aman dikirim ke dalam kota.</span></li>
+        </ol>
+      </div>
     </div>
-    <form class="card form" id="form-streak">
-      <label>Belajar apa hari ini?<input name="catatan" placeholder="mis. Latihan soal integral" maxlength="80"></label>
-      <label>Durasi (menit)<input name="menit" type="number" min="5" max="600" step="5" value="30"></label>
-      <button class="btn primary" type="submit" id="btn-checkin">Catat belajar hari ini</button>
-    </form>
-    <article class="card">
-      <div class="card-head"><h2>16 minggu terakhir</h2><span class="legend"><i class="l0"></i>sedikit<i class="l1"></i><i class="l2"></i><i class="l3"></i>banyak</span></div>
-      <div class="heat-wrap"><div class="heat" id="heat"></div></div>
-    </article>
-    <article class="card">
-      <div class="card-head"><h2>Catatan belajar</h2></div>
-      <ul class="list" id="log-list"></ul>
-    </article>
+  </section>
+
+  <section class="section" id="hampers" aria-labelledby="h-hampers">
+    <div class="wrap split rev">
+      <figure class="split-media reveal"><img src="assets/box.jpg" alt="Box kraft berisi sembilan brownies aneka rasa" loading="lazy" width="1200" height="900"></figure>
+      <div class="split-copy">
+        <p class="kicker">Hampers &amp; box</p>
+        <h2 id="h-hampers">Buat <em>dibagi</em>, atau tidak.</h2>
+        <p>Campur rasa sesukamu. Tulis kombinasinya di catatan pesanan, kami siapkan kartu ucapan gratis.</p>
+        <div class="boxes" id="boxes"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="cara" aria-labelledby="h-cara">
+    <div class="wrap">
+      <p class="kicker">Cara pesan</p>
+      <h2 id="h-cara">Tiga langkah, <em>beres</em>.</h2>
+      <div class="how">
+        <article class="reveal"><span>1</span><h3>Pilih menu</h3><p>Tambahkan brownies satuan atau box hampers ke keranjang.</p></article>
+        <article class="reveal"><span>2</span><h3>Isi data</h3><p>Nama, alamat, dan pilih diantar atau ambil sendiri.</p></article>
+        <article class="reveal"><span>3</span><h3>Kirim ke WhatsApp</h3><p>Pesanan otomatis tersusun rapi, tinggal kirim dan konfirmasi.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq" aria-labelledby="h-faq">
+    <div class="wrap faq-wrap">
+      <div>
+        <p class="kicker">FAQ</p>
+        <h2 id="h-faq">Yang sering <em>ditanya</em></h2>
+      </div>
+      <div class="faq">
+        <details><summary>Tahan berapa lama?</summary><p>3 hari di suhu ruang dalam wadah tertutup, sampai 7 hari di kulkas. Hangatkan 10 detik di microwave biar lumer lagi.</p></details>
+        <details><summary>Pesan H-berapa?</summary><p>Menu satuan bisa dipesan di hari yang sama selama stok ada. Hampers sebaiknya H-1.</p></details>
+        <details><summary>Bisa kirim ke mana?</summary><p>Pengiriman dalam kota lewat kurir instan, ongkir mengikuti jarak. Bisa juga ambil sendiri.</p></details>
+        <details><summary>Pembayarannya bagaimana?</summary><p>Transfer bank atau e-wallet. Detail pembayaran dikirim setelah pesanan dikonfirmasi via WhatsApp.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="closer" aria-label="Penutup">
+    <p class="closer-word" aria-hidden="true">Br<span>0</span>wNie</p>
+    <div class="closer-cta"><a class="btn primary" href="#menu">Pesan sekarang</a></div>
   </section>
 </main>
 
-<footer class="wrap foot">
-  <span>Shii · data tersimpan di browser ini</span>
-  <span><button class="link" id="btn-export">Ekspor data</button> · <label class="link" for="file-import">Impor data</label><input type="file" id="file-import" accept="application/json" hidden></span>
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div><p class="logo light">Br<span>0</span>wNie</p><p class="muted-l">Brownies fudgy, dipanggang tiap pagi.</p></div>
+    <div><p class="foot-h">Jam buka</p><p class="muted-l" id="foot-hours"></p></div>
+    <div><p class="foot-h">Pesan</p><p class="muted-l"><button class="link-l" data-quick-wa>WhatsApp</button></p></div>
+  </div>
+  <div class="wrap foot-bottom muted-l">© <span id="year"></span> Br0wNie</div>
 </footer>
 
+<!-- Cart drawer -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Keranjang" aria-hidden="true">
+  <div class="drawer-head"><h2>Keranjang</h2><button class="x" data-close-drawer aria-label="Tutup">×</button></div>
+  <div class="drawer-body">
+    <ul class="cart-list" id="cart-list"></ul>
+    <form id="form-order" class="order">
+      <label>Nama<input name="nama" required maxlength="60" autocomplete="name"></label>
+      <fieldset class="seg"><legend>Pengambilan</legend>
+        <label><input type="radio" name="metode" value="Diantar" checked><span>Diantar</span></label>
+        <label><input type="radio" name="metode" value="Ambil sendiri"><span>Ambil sendiri</span></label>
+      </fieldset>
+      <label id="lbl-alamat">Alamat<textarea name="alamat" rows="2" maxlength="200"></textarea></label>
+      <label>Tanggal<input name="tanggal" type="date" required></label>
+      <label>Catatan<textarea name="catatan" rows="2" maxlength="200" placeholder="mis. box 9 isi 3 klasik, 3 keju, 3 matcha"></textarea></label>
+    </form>
+  </div>
+  <div class="drawer-foot">
+    <div class="total"><span>Total</span><b id="cart-total">Rp0</b></div>
+    <button class="btn primary block" form="form-order" type="submit" id="btn-order">Kirim pesanan ke WhatsApp</button>
+    <p class="fine">Ongkir dihitung saat konfirmasi.</p>
+  </div>
+</aside>
+
+<!-- Admin login -->
 <dialog id="dlg-login" aria-labelledby="dlg-login-h">
   <form id="form-login" class="dlg">
     <h2 id="dlg-login-h">Login admin</h2>
-    <p class="muted">Masuk untuk mengelola jadwal pelajaran dan data kelas.</p>
+    <p class="muted">Kelola menu, harga, stok, dan nomor WhatsApp toko.</p>
     <label>Username<input name="user" autocomplete="username" required></label>
     <label>Password<input name="pass" type="password" autocomplete="current-password" required></label>
     <p class="err" id="login-err" role="alert"></p>
-    <div class="dlg-actions"><button type="button" class="btn" data-close>Batal</button><button class="btn primary" type="submit">Masuk</button></div>
+    <div class="dlg-actions"><button type="button" class="btn ghost" data-close>Batal</button><button class="btn primary" type="submit">Masuk</button></div>
   </form>
 </dialog>
 
-<dialog id="dlg-admin" aria-labelledby="dlg-admin-h">
+<!-- Admin panel -->
+<dialog id="dlg-admin" class="wide" aria-labelledby="dlg-admin-h">
   <div class="dlg">
-    <h2 id="dlg-admin-h">Panel admin</h2>
-    <p class="muted">Login sebagai <b id="admin-name">admin</b>.</p>
-    <div class="admin-stats" id="admin-stats"></div>
-    <form id="form-pass" class="sub-form">
-      <h3>Ganti password</h3>
-      <label>Password baru<input name="p1" type="password" minlength="6" required autocomplete="new-password"></label>
-      <label>Ulangi password<input name="p2" type="password" minlength="6" required autocomplete="new-password"></label>
-      <button class="btn" type="submit">Buat password baru</button>
-      <p class="muted" id="pass-out"></p>
-    </form>
-    <div class="sub-form">
-      <h3>Zona berbahaya</h3>
-      <div class="row-btns">
-        <button class="btn danger" data-reset="nilai">Hapus semua nilai</button>
-        <button class="btn danger" data-reset="log">Reset streak</button>
-        <button class="btn danger" data-reset="jadwal">Kosongkan jadwal</button>
-      </div>
-      <p class="muted" id="reset-confirm"></p>
+    <div class="dlg-top"><h2 id="dlg-admin-h">Panel admin</h2><button class="x" data-close aria-label="Tutup">×</button></div>
+    <div class="admin-tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-atab="produk">Produk</button>
+      <button role="tab" data-atab="toko">Toko</button>
+      <button role="tab" data-atab="akun">Akun</button>
     </div>
-    <div class="dlg-actions"><button class="btn" id="btn-logout">Keluar</button><button class="btn primary" data-close>Tutup</button></div>
+
+    <div class="apane" data-apane="produk">
+      <form id="form-prod" class="prod-form">
+        <input type="hidden" name="id">
+        <label>Nama<input name="nama" required maxlength="40"></label>
+        <label>Harga (Rp)<input name="harga" type="number" min="0" step="500" required></label>
+        <label>Kategori<select name="kategori"><option>Klasik</option><option>Topping</option><option>Spesial</option><option>Hampers</option></select></label>
+        <label class="full">Deskripsi<input name="desk" maxlength="90"></label>
+        <label>Foto<input name="foto" type="file" accept="image/*"></label>
+        <label class="chk"><input type="checkbox" name="habis"> Stok habis</label>
+        <div class="full row"><button class="btn primary sm" type="submit" id="prod-submit">Tambah produk</button><button class="btn ghost sm" type="button" id="prod-cancel" hidden>Batal edit</button></div>
+      </form>
+      <ul class="admin-list" id="admin-list"></ul>
+    </div>
+
+    <div class="apane" data-apane="toko" hidden>
+      <form id="form-toko" class="prod-form">
+        <label class="full">Nomor WhatsApp (format 62…)<input name="wa" inputmode="numeric" pattern="62[0-9]{8,13}" placeholder="6281234567890"></label>
+        <label class="full">Jam buka<input name="jam" maxlength="60"></label>
+        <label class="full">Teks berjalan (pisahkan dengan koma)<input name="marquee" maxlength="200"></label>
+        <div class="full"><button class="btn primary sm" type="submit">Simpan</button></div>
+      </form>
+      <div class="sub">
+        <button class="btn ghost sm" id="btn-export">Ekspor data</button>
+        <label class="btn ghost sm" for="file-import">Impor data</label><input type="file" id="file-import" accept="application/json" hidden>
+        <button class="btn danger sm" id="btn-reset">Kembalikan menu awal</button>
+      </div>
+      <p class="muted" id="reset-msg"></p>
+    </div>
+
+    <div class="apane" data-apane="akun" hidden>
+      <form id="form-pass" class="prod-form">
+        <label>Password baru<input name="p1" type="password" minlength="6" required autocomplete="new-password"></label>
+        <label>Ulangi password<input name="p2" type="password" minlength="6" required autocomplete="new-password"></label>
+        <div class="full"><button class="btn primary sm" type="submit">Ganti password</button></div>
+      </form>
+      <p class="muted" id="pass-out"></p>
+      <div class="sub"><button class="btn ghost sm" id="btn-logout">Keluar dari admin</button></div>
+    </div>
   </div>
 </dialog>
 

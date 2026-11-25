@@ -1,15 +1,18 @@
-# Shii
+# Br0wNie
 
-Web kelas sederhana: **jadwal pelajaran**, **daftar nilai** yang diinput pengguna, dan **streak belajar** harian, plus **login admin**.
+Website toko brownies **Br0wNie**: menu satuan, hampers, keranjang belanja, pesan otomatis lewat WhatsApp, dan **login admin** untuk mengelola toko.
 
-- Jadwal pelajaran per hari (Senin–Sabtu), menandai pelajaran yang sedang berlangsung. Hanya admin yang bisa menambah/menghapus jadwal.
-- Daftar nilai: input mapel, jenis (tugas, kuis, UTS, UAS, dll.), nilai 0–100, dan tanggal; rata-rata per mapel otomatis.
-- Streak belajar: catat belajar tiap hari, streak saat ini & terpanjang, heatmap 16 minggu.
-- Panel admin: ganti password, hapus semua nilai, reset streak, kosongkan jadwal.
-- Ekspor/impor data (JSON).
+## Fitur
+- Menu brownies dengan filter kategori (Klasik, Topping, Spesial) dan label Terlaris/Habis.
+- Box & hampers (isi 4, 9, 16).
+- Keranjang: atur jumlah, pilih diantar/ambil sendiri, tanggal, catatan. Tombol "Kirim pesanan ke WhatsApp" menyusun pesan pesanan otomatis.
+- Panel admin: tambah/edit/hapus produk (termasuk upload foto), tandai stok habis, atur nomor WhatsApp, jam buka, teks berjalan, ekspor/impor data, ganti password.
+
+## Pengaturan
+Edit `config.js`:
+- `WA_NUMBER`: nomor WhatsApp toko, format `628xxxxxxxxxx`.
+- `ADMIN_HASH`: hash password admin. Hitung: `printf 'shii-salt:PASSWORD_BARU' | sha256sum`.
 
 ## Catatan teknis
-Situs statis (HTML/CSS/JS murni) untuk GitHub Pages. Data tersimpan di `localStorage` browser masing-masing.
-Login admin bersifat sisi-klien (password disimpan sebagai hash SHA-256 di `config.js`) — cocok untuk membatasi pengeditan biasa, tetapi bukan keamanan tingkat server.
-
-Mengganti password untuk semua perangkat: hitung `printf 'shii-salt:PASSWORD_BARU' | sha256sum` lalu ganti `ADMIN_HASH` di `config.js`.
+Situs statis untuk GitHub Pages. Perubahan dari panel admin disimpan di browser perangkat admin (localStorage). Agar menu baru tampil untuk semua pengunjung, ekspor data dari panel admin lalu ubah daftar `defaults()` di `app.js`, atau hubungkan ke database online.
+Login admin bersifat sisi-klien, cocok untuk membatasi pengeditan biasa, bukan keamanan tingkat server.
