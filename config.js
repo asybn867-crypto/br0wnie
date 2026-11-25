@@ -9,6 +9,6 @@ window.SHII_CONFIG = {
   // Isi link kalau akun sudah dibuat, mis. "https://instagram.com/br0wnie"
   INSTAGRAM: "",
   FACEBOOK: "",
-  ADMIN_USER: "admin",
-  ADMIN_HASH: "d3546e19ad4c735e16e3b1b93ef812fb9750a5706fa7b8038f609db460fdea82"
+  ADMIN_USER: "Syaban",
+  ADMIN_HASH: "6bb0c6da716adb37e56740712ce672026073e835dc186e900d8abb66994ac714"
 };
