@@ -270,7 +270,7 @@
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
     return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
   }
-  const adminHash = () => localStorage.getItem(HKEY) || CFG.ADMIN_HASH;
+  const adminHash = () => CFG.ADMIN_HASH;
   function isAdmin() { try { const s = JSON.parse(sessionStorage.getItem(SKEY)); return !!s && s.h === adminHash() && Date.now() < s.exp; } catch { return false; } }
   function applyAdmin() { const on = isAdmin(); const b = $('#btn-admin'); b.textContent = on ? 'Admin ✓' : 'Admin'; b.classList.toggle('on', on); }
   const dl = $('#dlg-login'), da = $('#dlg-admin');
